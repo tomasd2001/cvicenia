@@ -20,43 +20,52 @@ def Rz(alpha):
     c = np.cos(alpha)
     s = np.sin(alpha)
     return np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])
+
+def Ry(beta):
+    c = np.cos(beta)
+    s = np.sin(beta)
+    return np.array([[c, 0, s], [0, 1, 0], [-s, 0, c]])
+
+def Rx(gamma):
+    c = np.cos(gamma)
+    s = np.sin(gamma)
+    return np.array([[1, 0, 0], [0, c, -s], [0, s, c]])
     
 if __name__ == "__main__":
-    local_R = np.eye(3)
+    alfa = np.deg2rad(30)
+    gamma = np.deg2rad(45)
 
-    local_origin = np.array([0, 0, 0])
+    R_z = Rz(alfa)
+    R_x = Rx(gamma)
 
-    angle_deg = 30
-    angle_rad = np.deg2rad(angle_deg)
-    #world_R = Rz(angle_rad)
-    world_R = np.eye(3)
+    Rz_then_Rx = Rz(alfa).dot(Rx(gamma))
+    Rx_then_Rx = Rx(gamma).dot(Rz(alfa))
 
-    world_origin = np.array([1, 2, 3])
 
-    p_local = np.array([0.5, -0.5, 1])
-
-    p_world = transform_point(world_R, world_origin, p_local)
 
     fig = plt.figure(figsize=(12,6))
 
     # subplot 1
     ax1 = fig.add_subplot(121, projection='3d')
-    plot_frame(ax1, local_R, local_origin, "Local Frame", length=1)
-    ax1.scatter(p_local[0], p_local[1], p_local[2], color='magenta', s = 50, label="p in local frame")
-    ax1.set_title("Local Frame and p local")
-    ax1.set_xlim(-2, 2)
-    ax1.set_ylim(-2, 2)
-    ax1.set_zlim(-2, 2)
+    plot_frame(ax1, np.eye(3), np.array([0, 0, 0]), "Local Frame")
+    plot_frame(ax1, Rz_then_Rx, np.array([0, 0, 0]), "RZ")
+
+
+    ax1.set_title("Rz_then_Rx rotation")
+    ax1.set_xlim(-1, 1)
+    ax1.set_ylim(-1, 1)
+    ax1.set_zlim(-1, 1)
     ax1.legend()
 
     ax2 = fig.add_subplot(122, projection='3d')
-    plot_frame(ax2, np.eye(3), np.array((0, 0, 0)), "World Base", length=1)
-    plot_frame(ax2, world_R, world_origin, "Transformed Frame")
-    ax2.scatter(p_world[0], p_world[1], p_world[2], color='orange', s=50, label="p in world frame")
-    ax2.set_title("World frame and p(transformed coordinates)")
-    ax2.set_xlim(-1, 4)
-    ax2.set_ylim(-1, 4)
-    ax2.set_zlim(0, 6)
+    plot_frame(ax2, np.eye(3), np.array((0, 0, 0)), "World Base",)
+    plot_frame(ax2, Rx_then_Rx, np.array([0, 0, 0]), "RZ")
+
+
+    ax2.set_title("Rx_then_Rz rotation")
+    ax2.set_xlim(-1, 1)
+    ax2.set_ylim(-1, 1)
+    ax2.set_zlim(-1, 1)
     ax2.legend()
 
     plt.show()
