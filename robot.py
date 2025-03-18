@@ -41,5 +41,5 @@ if __name__=="__main__":
         for joint_idx, angle in enumerate(joint_angles):
             env.move_joint(joint_idx, angle)
         pb.stepSimulation()
-        time.sleep(0.01)
+        time.sleep(1)
     pb.disconnect()
